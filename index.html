@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tra Cứu Tài Khoản</title>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent-glow: rgba(88,166,255,0.15);
+      --green: #3fb950;
+      --green-glow: rgba(63,185,80,0.15);
+      --yellow: #e3b341;
+      --yellow-glow: rgba(227,179,65,0.15);
+      --red: #f85149;
+      --text-1: #e6edf3;
+      --text-2: #8b949e;
+      --text-3: #484f58;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+    }
+
+    .app-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .app-logo {
+      width: 42px; height: 42px;
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+
+    .app-title h1 { font-size: 1.05rem; font-weight: 700; color: var(--text-1); }
+    .app-title p  { font-size: 0.78rem; color: var(--text-2); }
+
+    .field-label {
+      display: block;
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--text-2);
+      letter-spacing: .05em; text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .input-row { display: flex; gap: 8px; margin-bottom: 20px; }
+
+    .stk-input {
+      flex: 1;
+      padding: 11px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-1);
+      font-family: inherit; font-size: 1rem;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .stk-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .btn-search {
+      padding: 11px 20px;
+      background: var(--accent); color: #0d1117;
+      border: none; border-radius: 8px;
+      font-family: inherit; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: opacity .2s, box-shadow .2s;
+    }
+    .btn-search:hover { opacity: 0.88; box-shadow: 0 0 16px var(--accent-glow); }
+
+    #result { animation: fadeUp .3s ease; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .result-card.found    { border-color: var(--green); background: var(--green-glow); }
+    .result-card.not-found { border-color: var(--red);  background: rgba(248,81,73,0.08); }
+
+    .result-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 0;
+    }
+    .result-row + .result-row { border-top: 1px solid var(--border); }
+
+    .result-label { font-size: 0.78rem; color: var(--text-2); font-weight: 500; }
+    .result-value { font-size: 0.95rem; font-weight: 600; color: var(--text-1); text-align: right; }
+    .result-value.balance { color: var(--green); font-size: 1.1rem; }
+
+    /* interest row */
+    .interest-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 9px 0;
+      border-top: 1px solid var(--border);
+    }
+    .interest-info { text-align: right; }
+    .interest-amount { font-size: 0.95rem; font-weight: 600; color: var(--yellow); }
+    .interest-date   { font-size: 0.75rem; color: var(--text-2); margin-top: 3px; }
+    .interest-badge  {
+      display: inline-block;
+      background: var(--yellow-glow);
+      border: 1px solid var(--yellow);
+      color: var(--yellow);
+      font-size: 0.7rem; font-weight: 600;
+      padding: 2px 8px; border-radius: 99px;
+      margin-top: 5px;
+    }
+
+    .not-found-msg { text-align: center; padding: 6px 0; }
+    .not-found-msg .icon { font-size: 28px; margin-bottom: 6px; }
+    .not-found-msg p     { color: var(--red); font-size: 0.9rem; font-weight: 500; }
+    .not-found-msg small { color: var(--text-2); font-size: 0.78rem; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+    .footer-note { font-size: 0.75rem; color: var(--text-3); text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <div class="card">
+      <div class="app-header">
+        <div class="app-logo">🏦</div>
+        <div class="app-title">
+          <h1>Tra Cứu Số Dư</h1>
+          <p>Hệ thống nội bộ gia đình</p>
+        </div>
+      </div>
+
+      <label class="field-label" for="stk-input">Số tài khoản</label>
+      <div class="input-row">
+        <input class="stk-input" id="stk-input" type="text"
+               placeholder="Nhập STK..."
+               autocomplete="off"
+               onkeydown="if(event.key==='Enter') search()"/>
+        <button class="btn-search" onclick="search()">Tìm kiếm</button>
+      </div>
+
+      <div id="result"></div>
+
+      <hr class="divider"/>
+      <p class="footer-note">Chỉnh dữ liệu trong phần <code>CSV_DATA</code> của file HTML</p>
+    </div>
+  </div>
+
+<script>
+  // ── DỮ LIỆU ── Thêm/sửa tài khoản tại đây ───────────────────────────────
+  // Cột: stk, name, balance, interest_day, interest_amount
+  //   interest_day    = ngày cộng lãi trong tháng (1-31). Để trống = không có lãi
+  //   interest_amount = số tiền lãi cố định cộng vào mỗi tháng (đơn vị: đồng)
+  const CSV_DATA = `stk,name,balance,interest_day,interest_amount
+2904,Trần Huỳnh Tuyết Minh,980000,15,60000
+789012,Vũ Phạm Đình,1200000,15,80000
+1,Huỳnh Huyền,0,,
+111222,Test,750000,10,30000
+333444,Hehe,9800000,1,200000`;
+  // ─────────────────────────────────────────────────────────────────────────
+
+  let db = {};
+
+  function loadCSV() {
+    const lines = CSV_DATA.trim().split('\n');
+    lines.slice(1).forEach(line => {
+      const parts = line.split(',').map(s => s.trim());
+      const [stk, name, balance, interest_day, interest_amount] = parts;
+      if (stk) db[stk] = {
+        name,
+        balance:         parseInt(balance,         10) || 0,
+        interest_day:    interest_day    ? parseInt(interest_day,    10) : null,
+        interest_amount: interest_amount ? parseInt(interest_amount, 10) : null,
+      };
+    });
+  }
+  loadCSV();
+
+  function formatVND(n) { return n.toLocaleString('vi-VN') + ' \u20ab'; }
+
+  function nextInterestDate(day) {
+    const today = new Date();
+    const thisMonth = new Date(today.getFullYear(), today.getMonth(), day);
+    return today <= thisMonth ? thisMonth
+      : new Date(today.getFullYear(), today.getMonth() + 1, day);
+  }
+
+  function formatDate(d) {
+    return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  }
+
+  function search() {
+    const stk = document.getElementById('stk-input').value.trim();
+    const resultEl = document.getElementById('result');
+
+    if (!stk) { resultEl.innerHTML = ''; return; }
+
+    const r = db[stk];
+    if (r) {
+      let interestHTML = '';
+      if (r.interest_day && r.interest_amount) {
+        const next   = nextInterestDate(r.interest_day);
+        const isToday = next.toDateString() === new Date().toDateString();
+        interestHTML = `
+          <div class="interest-row">
+            <span class="result-label">Lãi hàng tháng</span>
+            <div class="interest-info">
+              <div class="interest-amount">+${formatVND(r.interest_amount)}</div>
+              <div class="interest-date">Cộng vào ngày <strong>${r.interest_day}</strong> mỗi tháng</div>
+              <div class="interest-date">Lần tới: <strong>${formatDate(next)}</strong></div>
+              ${isToday ? '<span class="interest-badge">&#128176; Hôm nay cộng lãi!</span>' : ''}
+            </div>
+          </div>`;
+      }
+
+      resultEl.innerHTML = `
+        <div class="result-card found">
+          <div class="result-row">
+            <span class="result-label">Số tài khoản</span>
+            <span class="result-value">${stk}</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Chủ tài khoản</span>
+            <span class="result-value">${r.name}</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Số dư hiện tại</span>
+            <span class="result-value balance">${formatVND(r.balance)}</span>
+          </div>
+          ${interestHTML}
+        </div>`;
+    } else {
+      resultEl.innerHTML = `
+        <div class="result-card not-found">
+          <div class="not-found-msg">
+            <div class="icon">&#128269;</div>
+            <p>Không tìm thấy</p>
+            <small>STK <strong>${stk}</strong> không tồn tại trong hệ thống</small>
+          </div>
+        </div>`;
+    }
+  }
+</script>
+</body>
+</html>
