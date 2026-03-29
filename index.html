@@ -4,204 +4,295 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tra Cứu Tài Khoản</title>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --border: #30363d;
-      --accent: #58a6ff;
-      --accent-glow: rgba(88,166,255,0.15);
-      --green: #3fb950;
-      --green-glow: rgba(63,185,80,0.15);
-      --yellow: #e3b341;
-      --yellow-glow: rgba(227,179,65,0.15);
-      --red: #f85149;
-      --text-1: #e6edf3;
-      --text-2: #8b949e;
-      --text-3: #484f58;
-      --radius: 12px;
+      --bg:           #080c10;
+      --panel:        #0e1419;
+      --card:         #131920;
+      --border:       rgba(255,255,255,0.07);
+      --border-lit:   rgba(255,255,255,0.13);
+      --accent:       #4f9eff;
+      --accent-dim:   rgba(79,158,255,0.12);
+      --accent-glow:  rgba(79,158,255,0.25);
+      --green:        #34d399;
+      --green-dim:    rgba(52,211,153,0.10);
+      --yellow:       #fbbf24;
+      --yellow-dim:   rgba(251,191,36,0.10);
+      --red:          #f87171;
+      --t1:           #f0f4f8;
+      --t2:           #7a8a9a;
+      --t3:           #3a4a5a;
+      --r:            14px;
     }
 
     body {
-      font-family: 'Be Vietnam Pro', sans-serif;
+      font-family: 'Sora', sans-serif;
       background: var(--bg);
-      color: var(--text-1);
+      color: var(--t1);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    body::before {
+    /* ambient glow blobs */
+    body::before, body::after {
       content: '';
       position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: 0.3;
+      border-radius: 50%;
+      filter: blur(80px);
       pointer-events: none;
+      opacity: 0.25;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #1a4a8a 0%, transparent 70%);
+      top: -100px; left: -100px;
+    }
+    body::after {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #0a3a2a 0%, transparent 70%);
+      bottom: -80px; right: -80px;
     }
 
     #app {
       width: 100%;
-      max-width: 480px;
+      max-width: 440px;
       position: relative;
       z-index: 1;
+      animation: rise .5s cubic-bezier(.22,1,.36,1) both;
     }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 36px 32px;
-      box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .app-header {
-      display: flex; align-items: center; gap: 12px;
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
       margin-bottom: 28px;
     }
 
-    .app-logo {
-      width: 42px; height: 42px;
-      background: var(--accent-glow);
-      border: 1px solid var(--accent);
-      border-radius: 10px;
+    .logo-ring {
+      width: 56px; height: 56px;
+      margin: 0 auto 14px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #1a3a6a, #0a2a4a);
+      border: 1px solid var(--accent-dim);
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
+      font-size: 24px;
+      box-shadow: 0 0 24px var(--accent-glow);
     }
 
-    .app-title h1 { font-size: 1.05rem; font-weight: 700; color: var(--text-1); }
-    .app-title p  { font-size: 0.78rem; color: var(--text-2); }
-
-    .field-label {
-      display: block;
-      font-size: 0.78rem; font-weight: 600;
-      color: var(--text-2);
-      letter-spacing: .05em; text-transform: uppercase;
-      margin-bottom: 8px;
+    .header h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: var(--t1);
     }
 
-    .input-row { display: flex; gap: 8px; margin-bottom: 20px; }
+    .header p {
+      font-size: 0.78rem;
+      color: var(--t2);
+      margin-top: 4px;
+      font-weight: 300;
+    }
+
+    /* ── SEARCH BOX ── */
+    .search-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+
+    .input-wrap {
+      display: flex;
+      gap: 10px;
+    }
 
     .stk-input {
       flex: 1;
-      padding: 11px 14px;
+      padding: 12px 16px;
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text-1);
-      font-family: inherit; font-size: 1rem;
+      border-radius: 10px;
+      color: var(--t1);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      letter-spacing: .04em;
       outline: none;
       transition: border-color .2s, box-shadow .2s;
     }
+    .stk-input::placeholder { color: var(--t3); font-size: 0.85rem; font-family: 'Sora', sans-serif; letter-spacing: 0; }
     .stk-input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
+      box-shadow: 0 0 0 3px var(--accent-dim);
     }
 
     .btn-search {
-      padding: 11px 20px;
-      background: var(--accent); color: #0d1117;
-      border: none; border-radius: 8px;
-      font-family: inherit; font-size: 0.9rem; font-weight: 600;
-      cursor: pointer; white-space: nowrap;
-      transition: opacity .2s, box-shadow .2s;
+      padding: 12px 18px;
+      background: var(--accent);
+      color: #05080c;
+      border: none; border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.85rem; font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .2s, box-shadow .2s, transform .1s;
     }
-    .btn-search:hover { opacity: 0.88; box-shadow: 0 0 16px var(--accent-glow); }
+    .btn-search:hover  { background: #6aadff; box-shadow: 0 0 20px var(--accent-glow); }
+    .btn-search:active { transform: scale(.97); }
 
-    #result { animation: fadeUp .3s ease; }
+    /* ── RESULT ── */
+    #result-wrap {
+      animation: fadeUp .3s cubic-bezier(.22,1,.36,1) both;
+    }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
     .result-card {
-      background: var(--bg);
+      background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
+      border-radius: var(--r);
+      overflow: hidden;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
     }
-    .result-card.found    { border-color: var(--green); background: var(--green-glow); }
-    .result-card.not-found { border-color: var(--red);  background: rgba(248,81,73,0.08); }
 
-    .result-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 9px 0;
+    /* coloured top stripe */
+    .result-card::before {
+      content: '';
+      display: block;
+      height: 3px;
     }
-    .result-row + .result-row { border-top: 1px solid var(--border); }
+    .result-card.found::before    { background: linear-gradient(90deg, var(--green), transparent); }
+    .result-card.not-found::before { background: linear-gradient(90deg, var(--red), transparent); }
 
-    .result-label { font-size: 0.78rem; color: var(--text-2); font-weight: 500; }
-    .result-value { font-size: 0.95rem; font-weight: 600; color: var(--text-1); text-align: right; }
-    .result-value.balance { color: var(--green); font-size: 1.1rem; }
+    .result-inner { padding: 18px 20px; }
+
+    .r-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 0;
+    }
+    .r-row + .r-row { border-top: 1px solid var(--border); }
+
+    .r-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--t2);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .r-value {
+      font-size: 0.93rem;
+      font-weight: 600;
+      color: var(--t1);
+      text-align: right;
+    }
+
+    .r-value.stk-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      color: var(--accent);
+      letter-spacing: .05em;
+    }
+
+    .r-value.bal-val {
+      font-size: 1.15rem;
+      color: var(--green);
+      letter-spacing: -.01em;
+    }
 
     /* interest row */
     .interest-row {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      padding: 9px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 11px 0;
       border-top: 1px solid var(--border);
     }
-    .interest-info { text-align: right; }
-    .interest-amount { font-size: 0.95rem; font-weight: 600; color: var(--yellow); }
-    .interest-date   { font-size: 0.75rem; color: var(--text-2); margin-top: 3px; }
-    .interest-badge  {
-      display: inline-block;
-      background: var(--yellow-glow);
-      border: 1px solid var(--yellow);
+
+    .interest-right { text-align: right; }
+    .int-amount {
+      font-size: 0.93rem;
+      font-weight: 600;
       color: var(--yellow);
-      font-size: 0.7rem; font-weight: 600;
-      padding: 2px 8px; border-radius: 99px;
-      margin-top: 5px;
+    }
+    .int-sub {
+      font-size: 0.72rem;
+      color: var(--t2);
+      margin-top: 3px;
+      line-height: 1.5;
+    }
+    .int-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--yellow-dim);
+      border: 1px solid rgba(251,191,36,0.3);
+      color: var(--yellow);
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 99px;
+      margin-top: 6px;
+      letter-spacing: .02em;
     }
 
-    .not-found-msg { text-align: center; padding: 6px 0; }
-    .not-found-msg .icon { font-size: 28px; margin-bottom: 6px; }
-    .not-found-msg p     { color: var(--red); font-size: 0.9rem; font-weight: 500; }
-    .not-found-msg small { color: var(--text-2); font-size: 0.78rem; }
-
-    .divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
-    .footer-note { font-size: 0.75rem; color: var(--text-3); text-align: center; }
+    /* not found */
+    .nf-body {
+      padding: 28px 20px;
+      text-align: center;
+    }
+    .nf-icon { font-size: 32px; margin-bottom: 10px; }
+    .nf-title { font-size: 0.95rem; font-weight: 600; color: var(--red); margin-bottom: 4px; }
+    .nf-sub   { font-size: 0.78rem; color: var(--t2); }
+    .nf-sub strong { color: var(--t1); font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
 <body>
 
   <div id="app">
-    <div class="card">
-      <div class="app-header">
-        <div class="app-logo">🏦</div>
-        <div class="app-title">
-          <h1>Tra Cứu Số Dư</h1>
-          <p>Hệ thống nội bộ gia đình</p>
-        </div>
-      </div>
 
-      <label class="field-label" for="stk-input">Số tài khoản</label>
-      <div class="input-row">
+    <div class="header">
+      <div class="logo-ring">🏦</div>
+      <h1>Tra Cứu Số Dư</h1>
+      <p>Hệ thống nội bộ gia đình</p>
+    </div>
+
+    <div class="search-box">
+      <div class="input-wrap">
         <input class="stk-input" id="stk-input" type="text"
-               placeholder="Nhập STK..."
+               placeholder="Nhập số tài khoản..."
                autocomplete="off"
                onkeydown="if(event.key==='Enter') search()"/>
-        <button class="btn-search" onclick="search()">Tìm kiếm</button>
+        <button class="btn-search" onclick="search()">Tìm</button>
       </div>
-
-      <div id="result"></div>
-
-      <hr class="divider"/>
-      <p class="footer-note">Chỉnh dữ liệu trong phần <code>CSV_DATA</code> của file HTML</p>
     </div>
+
+    <div id="result-wrap"></div>
+
   </div>
 
 <script>
-  // ── DỮ LIỆU ── Thêm/sửa tài khoản tại đây ───────────────────────────────
+  // ── DỮ LIỆU ─────────────────────────────────────────────────────────────
   // Cột: stk, name, balance, interest_day, interest_amount
-  //   interest_day    = ngày cộng lãi trong tháng (1-31). Để trống = không có lãi
-  //   interest_amount = số tiền lãi cố định cộng vào mỗi tháng (đơn vị: đồng)
+  //   interest_day    = ngày cộng lãi (1-31). Để trống = không có lãi
+  //   interest_amount = số tiền lãi cố định mỗi tháng (đồng)
   const CSV_DATA = `stk,name,balance,interest_day,interest_amount
 2904,Trần Huỳnh Tuyết Minh,980000,15,60000
 789012,Vũ Phạm Đình,1200000,15,80000
@@ -212,84 +303,86 @@
 
   let db = {};
 
-  function loadCSV() {
-    const lines = CSV_DATA.trim().split('\n');
-    lines.slice(1).forEach(line => {
-      const parts = line.split(',').map(s => s.trim());
-      const [stk, name, balance, interest_day, interest_amount] = parts;
+  (function loadCSV() {
+    CSV_DATA.trim().split('\n').slice(1).forEach(line => {
+      const [stk, name, balance, iday, iamt] = line.split(',').map(s => s.trim());
       if (stk) db[stk] = {
         name,
-        balance:         parseInt(balance,         10) || 0,
-        interest_day:    interest_day    ? parseInt(interest_day,    10) : null,
-        interest_amount: interest_amount ? parseInt(interest_amount, 10) : null,
+        balance:  parseInt(balance, 10) || 0,
+        iday:     iday ? parseInt(iday, 10) : null,
+        iamt:     iamt ? parseInt(iamt, 10) : null,
       };
     });
-  }
-  loadCSV();
+  })();
 
-  function formatVND(n) { return n.toLocaleString('vi-VN') + ' \u20ab'; }
+  const fmt = n => n.toLocaleString('vi-VN') + '\u202f₫';
 
-  function nextInterestDate(day) {
-    const today = new Date();
-    const thisMonth = new Date(today.getFullYear(), today.getMonth(), day);
-    return today <= thisMonth ? thisMonth
-      : new Date(today.getFullYear(), today.getMonth() + 1, day);
+  function nextDate(day) {
+    const t = new Date(), m = new Date(t.getFullYear(), t.getMonth(), day);
+    return t <= m ? m : new Date(t.getFullYear(), t.getMonth() + 1, day);
   }
 
-  function formatDate(d) {
+  function fmtDate(d) {
     return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
   }
 
   function search() {
     const stk = document.getElementById('stk-input').value.trim();
-    const resultEl = document.getElementById('result');
+    const wrap = document.getElementById('result-wrap');
 
-    if (!stk) { resultEl.innerHTML = ''; return; }
+    if (!stk) { wrap.innerHTML = ''; return; }
+
+    // re-trigger animation
+    wrap.style.animation = 'none';
+    void wrap.offsetWidth;
+    wrap.style.animation = '';
 
     const r = db[stk];
-    if (r) {
-      let interestHTML = '';
-      if (r.interest_day && r.interest_amount) {
-        const next   = nextInterestDate(r.interest_day);
-        const isToday = next.toDateString() === new Date().toDateString();
-        interestHTML = `
-          <div class="interest-row">
-            <span class="result-label">Lãi hàng tháng</span>
-            <div class="interest-info">
-              <div class="interest-amount">+${formatVND(r.interest_amount)}</div>
-              <div class="interest-date">Cộng vào ngày <strong>${r.interest_day}</strong> mỗi tháng</div>
-              <div class="interest-date">Lần tới: <strong>${formatDate(next)}</strong></div>
-              ${isToday ? '<span class="interest-badge">&#128176; Hôm nay cộng lãi!</span>' : ''}
-            </div>
-          </div>`;
-      }
-
-      resultEl.innerHTML = `
-        <div class="result-card found">
-          <div class="result-row">
-            <span class="result-label">Số tài khoản</span>
-            <span class="result-value">${stk}</span>
-          </div>
-          <div class="result-row">
-            <span class="result-label">Chủ tài khoản</span>
-            <span class="result-value">${r.name}</span>
-          </div>
-          <div class="result-row">
-            <span class="result-label">Số dư hiện tại</span>
-            <span class="result-value balance">${formatVND(r.balance)}</span>
-          </div>
-          ${interestHTML}
-        </div>`;
-    } else {
-      resultEl.innerHTML = `
+    if (!r) {
+      wrap.innerHTML = `
         <div class="result-card not-found">
-          <div class="not-found-msg">
-            <div class="icon">&#128269;</div>
-            <p>Không tìm thấy</p>
-            <small>STK <strong>${stk}</strong> không tồn tại trong hệ thống</small>
+          <div class="nf-body">
+            <div class="nf-icon">🔍</div>
+            <div class="nf-title">Không tìm thấy</div>
+            <div class="nf-sub">STK <strong>${stk}</strong> không tồn tại trong hệ thống</div>
+          </div>
+        </div>`;
+      return;
+    }
+
+    let intHTML = '';
+    if (r.iday && r.iamt) {
+      const next    = nextDate(r.iday);
+      const isToday = next.toDateString() === new Date().toDateString();
+      intHTML = `
+        <div class="interest-row">
+          <span class="r-label">Lãi hàng tháng</span>
+          <div class="interest-right">
+            <div class="int-amount">+${fmt(r.iamt)}</div>
+            <div class="int-sub">Ngày <strong>${r.iday}</strong> mỗi tháng &nbsp;·&nbsp; Lần tới <strong>${fmtDate(next)}</strong></div>
+            ${isToday ? '<span class="int-badge">💰 Hôm nay cộng lãi!</span>' : ''}
           </div>
         </div>`;
     }
+
+    wrap.innerHTML = `
+      <div class="result-card found">
+        <div class="result-inner">
+          <div class="r-row">
+            <span class="r-label">Số tài khoản</span>
+            <span class="r-value stk-val">${stk}</span>
+          </div>
+          <div class="r-row">
+            <span class="r-label">Chủ tài khoản</span>
+            <span class="r-value">${r.name}</span>
+          </div>
+          <div class="r-row">
+            <span class="r-label">Số dư</span>
+            <span class="r-value bal-val">${fmt(r.balance)}</span>
+          </div>
+          ${intHTML}
+        </div>
+      </div>`;
   }
 </script>
 </body>
