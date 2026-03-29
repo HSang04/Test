@@ -9,68 +9,68 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:           #080c10;
-      --panel:        #0e1419;
-      --card:         #131920;
-      --border:       rgba(255,255,255,0.07);
-      --border-lit:   rgba(255,255,255,0.13);
-      --accent:       #4f9eff;
-      --accent-dim:   rgba(79,158,255,0.12);
-      --accent-glow:  rgba(79,158,255,0.25);
-      --green:        #34d399;
-      --green-dim:    rgba(52,211,153,0.10);
-      --yellow:       #fbbf24;
-      --yellow-dim:   rgba(251,191,36,0.10);
-      --red:          #f87171;
-      --t1:           #f0f4f8;
-      --t2:           #7a8a9a;
-      --t3:           #3a4a5a;
-      --r:            14px;
+      --bg:          #080c10;
+      --panel:       #0e1419;
+      --border:      rgba(255,255,255,0.07);
+      --accent:      #4f9eff;
+      --accent-dim:  rgba(79,158,255,0.12);
+      --accent-glow: rgba(79,158,255,0.22);
+      --green:       #34d399;
+      --green-dim:   rgba(52,211,153,0.10);
+      --yellow:      #fbbf24;
+      --yellow-dim:  rgba(251,191,36,0.10);
+      --red:         #f87171;
+      --t1:          #f0f4f8;
+      --t2:          #7a8a9a;
+      --t3:          #2e3e4e;
+      --r:           16px;
     }
 
     body {
       font-family: 'Sora', sans-serif;
       background: var(--bg);
       color: var(--t1);
-      min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px 16px;
+      padding: 32px 20px;
       position: relative;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ambient glow blobs */
     body::before, body::after {
       content: '';
       position: fixed;
       border-radius: 50%;
-      filter: blur(80px);
+      filter: blur(90px);
       pointer-events: none;
-      opacity: 0.25;
+      z-index: 0;
     }
     body::before {
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, #1a4a8a 0%, transparent 70%);
-      top: -100px; left: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #1a3a70 0%, transparent 70%);
+      top: -100px; left: -80px;
+      opacity: 0.35;
     }
     body::after {
-      width: 400px; height: 400px;
+      width: 320px; height: 320px;
       background: radial-gradient(circle, #0a3a2a 0%, transparent 70%);
-      bottom: -80px; right: -80px;
+      bottom: -80px; right: -60px;
+      opacity: 0.3;
     }
 
     #app {
       width: 100%;
-      max-width: 440px;
+      max-width: 420px;
       position: relative;
       z-index: 1;
-      animation: rise .5s cubic-bezier(.22,1,.36,1) both;
+      animation: rise .45s cubic-bezier(.22,1,.36,1) both;
     }
 
     @keyframes rise {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
@@ -80,78 +80,85 @@
       margin-bottom: 28px;
     }
 
-    .logo-ring {
-      width: 56px; height: 56px;
+    .logo {
+      width: 60px; height: 60px;
       margin: 0 auto 14px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #1a3a6a, #0a2a4a);
-      border: 1px solid var(--accent-dim);
+      border-radius: 18px;
+      background: linear-gradient(135deg, #1a3a6a, #0a2040);
+      border: 1px solid rgba(79,158,255,0.25);
       display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
-      box-shadow: 0 0 24px var(--accent-glow);
+      font-size: 26px;
+      box-shadow: 0 0 28px var(--accent-glow);
     }
 
     .header h1 {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 700;
       letter-spacing: -.02em;
-      color: var(--t1);
     }
 
     .header p {
       font-size: 0.78rem;
       color: var(--t2);
-      margin-top: 4px;
       font-weight: 300;
+      margin-top: 4px;
     }
 
-    /* ── SEARCH BOX ── */
+    /* ── SEARCH ── */
     .search-box {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--r);
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+      padding: 16px;
+      margin-bottom: 14px;
     }
 
-    .input-wrap {
+    .input-row {
       display: flex;
       gap: 10px;
     }
 
     .stk-input {
       flex: 1;
-      padding: 12px 16px;
+      min-width: 0;
+      padding: 14px 16px;
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 12px;
       color: var(--t1);
       font-family: 'JetBrains Mono', monospace;
       font-size: 1rem;
       letter-spacing: .04em;
       outline: none;
+      -webkit-appearance: none;
       transition: border-color .2s, box-shadow .2s;
     }
-    .stk-input::placeholder { color: var(--t3); font-size: 0.85rem; font-family: 'Sora', sans-serif; letter-spacing: 0; }
+    .stk-input::placeholder {
+      color: var(--t3);
+      font-family: 'Sora', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0;
+    }
     .stk-input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-dim);
     }
 
     .btn-search {
-      padding: 12px 18px;
+      flex-shrink: 0;
+      width: 52px; height: 52px;
       background: var(--accent);
       color: #05080c;
-      border: none; border-radius: 10px;
-      font-family: 'Sora', sans-serif;
-      font-size: 0.85rem; font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      font-size: 20px;
       cursor: pointer;
-      white-space: nowrap;
-      transition: background .2s, box-shadow .2s, transform .1s;
+      display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      transition: background .15s, box-shadow .15s, transform .1s;
     }
     .btn-search:hover  { background: #6aadff; box-shadow: 0 0 20px var(--accent-glow); }
-    .btn-search:active { transform: scale(.97); }
+    .btn-search:active { transform: scale(.92); }
 
     /* ── RESULT ── */
     #result-wrap {
@@ -167,100 +174,102 @@
       border: 1px solid var(--border);
       border-radius: var(--r);
       overflow: hidden;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
     }
 
-    /* coloured top stripe */
     .result-card::before {
       content: '';
       display: block;
       height: 3px;
     }
-    .result-card.found::before    { background: linear-gradient(90deg, var(--green), transparent); }
-    .result-card.not-found::before { background: linear-gradient(90deg, var(--red), transparent); }
+    .result-card.found::before     { background: linear-gradient(90deg, var(--green), transparent 80%); }
+    .result-card.not-found::before { background: linear-gradient(90deg, var(--red), transparent 80%); }
 
-    .result-inner { padding: 18px 20px; }
+    .result-inner { padding: 4px 0; }
 
     .r-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 11px 0;
+      padding: 15px 18px;
+      gap: 16px;
     }
     .r-row + .r-row { border-top: 1px solid var(--border); }
 
     .r-label {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 500;
       color: var(--t2);
       text-transform: uppercase;
-      letter-spacing: .06em;
+      letter-spacing: .07em;
+      flex-shrink: 0;
     }
 
     .r-value {
-      font-size: 0.93rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--t1);
       text-align: right;
+      word-break: break-word;
     }
 
     .r-value.stk-val {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       color: var(--accent);
-      letter-spacing: .05em;
+      letter-spacing: .04em;
     }
 
     .r-value.bal-val {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
+      font-weight: 700;
       color: var(--green);
-      letter-spacing: -.01em;
     }
 
-    /* interest row */
-    .interest-row {
+    .int-row {
+      border-top: 1px solid var(--border);
+      padding: 15px 18px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      padding: 11px 0;
-      border-top: 1px solid var(--border);
+      gap: 16px;
     }
 
-    .interest-right { text-align: right; }
+    .int-right { text-align: right; }
+
     .int-amount {
-      font-size: 0.93rem;
-      font-weight: 600;
+      font-size: 0.95rem;
+      font-weight: 700;
       color: var(--yellow);
     }
-    .int-sub {
+
+    .int-meta {
       font-size: 0.72rem;
       color: var(--t2);
-      margin-top: 3px;
-      line-height: 1.5;
+      margin-top: 4px;
+      line-height: 1.65;
     }
+
     .int-badge {
       display: inline-flex;
       align-items: center;
       gap: 4px;
       background: var(--yellow-dim);
-      border: 1px solid rgba(251,191,36,0.3);
+      border: 1px solid rgba(251,191,36,0.25);
       color: var(--yellow);
       font-size: 0.68rem;
       font-weight: 600;
-      padding: 3px 9px;
+      padding: 3px 10px;
       border-radius: 99px;
-      margin-top: 6px;
-      letter-spacing: .02em;
+      margin-top: 7px;
     }
 
-    /* not found */
     .nf-body {
-      padding: 28px 20px;
+      padding: 36px 20px;
       text-align: center;
     }
-    .nf-icon { font-size: 32px; margin-bottom: 10px; }
-    .nf-title { font-size: 0.95rem; font-weight: 600; color: var(--red); margin-bottom: 4px; }
-    .nf-sub   { font-size: 0.78rem; color: var(--t2); }
+    .nf-icon  { font-size: 34px; margin-bottom: 10px; }
+    .nf-title { font-size: 0.95rem; font-weight: 600; color: var(--red); margin-bottom: 5px; }
+    .nf-sub   { font-size: 0.78rem; color: var(--t2); line-height: 1.5; }
     .nf-sub strong { color: var(--t1); font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
@@ -269,18 +278,19 @@
   <div id="app">
 
     <div class="header">
-      <div class="logo-ring">🏦</div>
+      <div class="logo">🏦</div>
       <h1>Tra Cứu Số Dư</h1>
       <p>Hệ thống nội bộ gia đình</p>
     </div>
 
     <div class="search-box">
-      <div class="input-wrap">
-        <input class="stk-input" id="stk-input" type="text"
+      <div class="input-row">
+        <input class="stk-input" id="stk-input"
+               type="number" inputmode="numeric"
                placeholder="Nhập số tài khoản..."
                autocomplete="off"
-               onkeydown="if(event.key==='Enter') search()"/>
-        <button class="btn-search" onclick="search()">Tìm</button>
+               onkeydown="if(event.key==='Enter'){this.blur();search();}"/>
+        <button class="btn-search" onclick="search()" aria-label="Tìm kiếm">🔍</button>
       </div>
     </div>
 
@@ -295,22 +305,21 @@
   //   interest_amount = số tiền lãi cố định mỗi tháng (đồng)
   const CSV_DATA = `stk,name,balance,interest_day,interest_amount
 2904,Trần Huỳnh Tuyết Minh,980000,15,60000
-789012,Vũ Phạm Đình,1200000,15,80000
+789012,Trương Ngọc Ánh,120000000,15,80000
 1,Huỳnh Huyền,0,,
-111222,Test,750000,10,30000
+0,Trần Huỳnh Sang,999999999999,,
 333444,Hehe,9800000,1,200000`;
   // ─────────────────────────────────────────────────────────────────────────
 
   let db = {};
-
-  (function loadCSV() {
+  (function () {
     CSV_DATA.trim().split('\n').slice(1).forEach(line => {
       const [stk, name, balance, iday, iamt] = line.split(',').map(s => s.trim());
       if (stk) db[stk] = {
         name,
-        balance:  parseInt(balance, 10) || 0,
-        iday:     iday ? parseInt(iday, 10) : null,
-        iamt:     iamt ? parseInt(iamt, 10) : null,
+        balance: parseInt(balance, 10) || 0,
+        iday:    iday ? parseInt(iday, 10) : null,
+        iamt:    iamt ? parseInt(iamt, 10) : null,
       };
     });
   })();
@@ -327,12 +336,11 @@
   }
 
   function search() {
-    const stk = document.getElementById('stk-input').value.trim();
+    const stk  = document.getElementById('stk-input').value.trim();
     const wrap = document.getElementById('result-wrap');
 
     if (!stk) { wrap.innerHTML = ''; return; }
 
-    // re-trigger animation
     wrap.style.animation = 'none';
     void wrap.offsetWidth;
     wrap.style.animation = '';
@@ -344,7 +352,7 @@
           <div class="nf-body">
             <div class="nf-icon">🔍</div>
             <div class="nf-title">Không tìm thấy</div>
-            <div class="nf-sub">STK <strong>${stk}</strong> không tồn tại trong hệ thống</div>
+            <div class="nf-sub">STK <strong>${stk}</strong><br>không tồn tại trong hệ thống</div>
           </div>
         </div>`;
       return;
@@ -355,12 +363,15 @@
       const next    = nextDate(r.iday);
       const isToday = next.toDateString() === new Date().toDateString();
       intHTML = `
-        <div class="interest-row">
-          <span class="r-label">Lãi hàng tháng</span>
-          <div class="interest-right">
+        <div class="int-row">
+          <span class="r-label">Lãi tháng</span>
+          <div class="int-right">
             <div class="int-amount">+${fmt(r.iamt)}</div>
-            <div class="int-sub">Ngày <strong>${r.iday}</strong> mỗi tháng &nbsp;·&nbsp; Lần tới <strong>${fmtDate(next)}</strong></div>
-            ${isToday ? '<span class="int-badge">💰 Hôm nay cộng lãi!</span>' : ''}
+            <div class="int-meta">
+              Ngày <strong>${r.iday}</strong> mỗi tháng<br>
+              Lần tới: <strong>${fmtDate(next)}</strong>
+            </div>
+            ${isToday ? '<div class="int-badge">💰 Hôm nay cộng lãi!</div>' : ''}
           </div>
         </div>`;
     }
@@ -369,11 +380,11 @@
       <div class="result-card found">
         <div class="result-inner">
           <div class="r-row">
-            <span class="r-label">Số tài khoản</span>
+            <span class="r-label">Số TK</span>
             <span class="r-value stk-val">${stk}</span>
           </div>
           <div class="r-row">
-            <span class="r-label">Chủ tài khoản</span>
+            <span class="r-label">Chủ TK</span>
             <span class="r-value">${r.name}</span>
           </div>
           <div class="r-row">
